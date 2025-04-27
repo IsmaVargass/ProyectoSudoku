@@ -1,6 +1,6 @@
 package com.ejercicio02.model;
 
-import com.ejercicio02.exception.*;
+import com.ejercicio02.exception.SudokuException;
 import com.ejercicio02.generator.GeneradorSudoku;
 import com.ejercicio02.interfaces.ISudoku;
 
@@ -13,60 +13,70 @@ public class Sudoku implements ISudoku {
         this.celdasFijas = new boolean[9][9];
     }
 
+    public Sudoku(Sudoku otro) {
+        this.tablero = new int[9][9];
+        this.celdasFijas = new boolean[9][9];
+        for (int i = 0; i < 9; i++) {
+            System.arraycopy(otro.tablero[i], 0, this.tablero[i], 0, 9);
+            System.arraycopy(otro.celdasFijas[i], 0, this.celdasFijas[i], 0, 9);
+        }
+    }
+
     @Override
     public void generarTablero(String dificultad) throws SudokuException {
         GeneradorSudoku generador = new GeneradorSudoku();
         this.tablero = generador.generar();
 
-        // Marcar celdas fijas (for-each anidado)
-        for (int filaIndex = 0; filaIndex < 9; filaIndex++) {
-            for (int colIndex = 0; colIndex < 9; colIndex++) {
-                celdasFijas[filaIndex][colIndex] = (tablero[filaIndex][colIndex] != 0);
+        // Marcar celdas fijas
+        for (int fila = 0; fila < 9; fila++) {
+            for (int col = 0; col < 9; col++) {
+                celdasFijas[fila][col] = (tablero[fila][col] != 0);
             }
         }
     }
 
-    @Override
-    public boolean esMovimientoValido(int fila, int columna, int valor) throws SudokuException {
-        // 📏 Validar rango 1–9
-        if (fila < 1 || fila > 9 || columna < 1 || columna > 9 || valor < 1 || valor > 9) {
-            throw new EntradaFueraDeRangoException("Fila, columna y valor deben estar entre 1 y 9.");
+    /**
+     * Comprueba si colocar valor en (fila, columna) (0-based) es válido.
+     * No lanza excepción para backtracking: devuelve false si no es posible.
+     */
+    public boolean esMovimientoValido(int fila, int columna, int valor) {
+        // rangos
+        if (fila < 0 || fila > 8 || columna < 0 || columna > 8 || valor < 1 || valor > 9) {
+            return false;
         }
-        int f = fila - 1;
-        int c = columna - 1;
-
-        if (celdasFijas[f][c]) {
-            throw new MovimientoInvalidoException("¡Celda fija! No puedes modificarla.");
+        if (celdasFijas[fila][columna]) {
+            return false;
         }
-
-        for (int vEnFila : tablero[f]) {
+        //  fila
+        for (int vEnFila : tablero[fila]) {
             if (vEnFila == valor) {
-                throw new MovimientoInvalidoException("Repetido en fila.");
+                return false;
             }
         }
-        for (int filaIdx = 0; filaIdx < 9; filaIdx++) {
-            if (tablero[filaIdx][c] == valor) {
-                throw new MovimientoInvalidoException("Repetido en columna.");
+        //  columna
+        for (int i = 0; i < 9; i++) {
+            if (tablero[i][columna] == valor) {
+                return false;
             }
         }
-
-        int bloqueFila = (f / 3) * 3;
-        int bloqueCol  = (c / 3) * 3;
+        //  bloque 3x3
+        int bloqueFila = (fila / 3) * 3;
+        int bloqueCol  = (columna / 3) * 3;
         for (int r = bloqueFila; r < bloqueFila + 3; r++) {
-            for (int col = bloqueCol; col < bloqueCol + 3; col++) {
-                if (tablero[r][col] == valor) {
-                    throw new MovimientoInvalidoException("Repetido en subcuadro 3x3.");
+            for (int c = bloqueCol; c < bloqueCol + 3; c++) {
+                if (tablero[r][c] == valor) {
+                    return false;
                 }
             }
         }
-
         return true;
     }
 
     @Override
     public void colocarNumero(int fila, int columna, int valor) throws SudokuException {
-        if (esMovimientoValido(fila, columna, valor)) {
-            tablero[fila - 1][columna - 1] = valor;
+        // convierte a 0-based
+        if (esMovimientoValido(fila - 1, columna - 1, valor)) {
+            setValor(fila - 1, columna - 1, valor);
         }
     }
 
@@ -101,5 +111,16 @@ public class Sudoku implements ISudoku {
                 System.out.println("+-------+-------+-------+");
             }
         }
+    }
+
+    @Override
+    public int getValor(int fila, int columna) {
+        return tablero[fila][columna];
+    }
+
+    @Override
+    public void setValor(int fila, int columna, int valor) {
+        // direct set (0-based fila/columna)
+        tablero[fila][columna] = valor;
     }
 }

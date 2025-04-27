@@ -6,15 +6,17 @@ public class GeneradorSudoku implements IGeneradorSudoku {
 
     @Override
     public int[][] generar() {
-        return generarPuzzle();
+        return generarPuzzle(); // privado para generar el tablero Sudoku
     }
 
+    // Genera un puzzle a partir de la solución completa, eliminando celdas
+    // y comprobando unicidad de solución.
     private int[][] generarPuzzle() {
         int[][] puzzleGrid = new int[9][9];
         rellenarSolucion(puzzleGrid);
 
         int vaciar = 40;
-        int maxIntentos = vaciar * 5;
+        int maxIntentos = vaciar * 5; // límite de intentos para evitar bucles infinitos
 
         while (vaciar > 0 && maxIntentos-- > 0) {
             int filaAleatoria = (int)(Math.random() * 9);
@@ -28,7 +30,7 @@ public class GeneradorSudoku implements IGeneradorSudoku {
             puzzleGrid[filaAleatoria][columnaAleatoria] = 0;
 
             if (contarSoluciones(puzzleGrid) != 1) {
-                // Más de 1 solución → revertir
+                // Si hay más de una solución, revertimos
                 puzzleGrid[filaAleatoria][columnaAleatoria] = respaldo;
             } else {
                 vaciar--;
@@ -38,6 +40,7 @@ public class GeneradorSudoku implements IGeneradorSudoku {
         return puzzleGrid;
     }
 
+    // Backtracking para rellenar completamente
     private boolean rellenarSolucion(int[][] grid) {
         for (int fila = 0; fila < 9; fila++) {
             for (int columna = 0; columna < 9; columna++) {
@@ -58,6 +61,7 @@ public class GeneradorSudoku implements IGeneradorSudoku {
         return true;
     }
 
+    // // Verifica si se puede poner 'numero sin saltarse las reglas
     private boolean esSeguro(int[][] grid, int fila, int columna, int numero) {
         for (int valorEnFila : grid[fila]) {
             if (valorEnFila == numero) {
@@ -81,6 +85,8 @@ public class GeneradorSudoku implements IGeneradorSudoku {
         return true;
     }
 
+    // Cuenta hasta 'limite' soluciones usando backtracking.
+    // Si encuentra más de 'limite', deja de buscar.
     private int contarSoluciones(int[][] grid) {
         return contar(grid, 2, 0);
     }
@@ -106,6 +112,7 @@ public class GeneradorSudoku implements IGeneradorSudoku {
                 }
             }
         }
+        // Si llegamos sin celdas vacías, es una solución completa
         return contador + 1;
     }
 }

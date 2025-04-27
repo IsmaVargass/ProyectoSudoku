@@ -9,4 +9,7 @@ public interface ISudoku {
     void colocarNumero(int fila, int columna, int valor) throws SudokuException;
     boolean estaResuelto();
     void mostrarTablero();
+    int getValor(int fila, int columna);
+
+    void setValor(int fila, int col, int i);
 }
