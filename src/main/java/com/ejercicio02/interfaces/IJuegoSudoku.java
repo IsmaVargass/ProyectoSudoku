@@ -1,4 +1,6 @@
 package com.ejercicio02.interfaces;
 
-public class IJuegoSudoku {
+// Controla el flujo de juego en consola
+public interface IJuegoSudoku {
+    void iniciar();
 }

@@ -1,4 +1,6 @@
 package com.ejercicio02.interfaces;
 
-public class IGeneradorSudoku {
+// Genera un tablero completo (solución) usando backtracking
+public interface IGeneradorSudoku {
+int[][] generar();
 }

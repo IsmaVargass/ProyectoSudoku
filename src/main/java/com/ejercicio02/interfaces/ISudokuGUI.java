@@ -1,4 +1,6 @@
 package com.ejercicio02.interfaces;
 
-public class ISudokuGUI {
+// Abstrae la GUI Swing
+public interface ISudokuGUI {
+    void iniciarInterfaz();
 }
