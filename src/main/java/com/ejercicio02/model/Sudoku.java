@@ -35,10 +35,9 @@ public class Sudoku implements ISudoku {
         }
     }
 
-    /**
-     * Comprueba si colocar valor en (fila, columna) (0-based) es válido.
-     * No lanza excepción para backtracking: devuelve false si no es posible.
-     */
+    // Comprueba si colocar valor en (fila, columna) (0-based) es válido.
+    // No lanza excepción para backtracking: devuelve false si no es posible.
+
     public boolean esMovimientoValido(int fila, int columna, int valor) {
         // rangos
         if (fila < 0 || fila > 8 || columna < 0 || columna > 8 || valor < 1 || valor > 9) {

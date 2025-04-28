@@ -1,12 +1,16 @@
 package com.ejercicio02.gui;
 
-import com.ejercicio02.model.Sudoku;
 import com.ejercicio02.exception.SudokuException;
 import com.ejercicio02.interfaces.ISudokuGUI;
 import com.ejercicio02.interfaces.IResolverSudoku;
 import com.ejercicio02.game.ResolverSudoku;
+import com.ejercicio02.model.Sudoku;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 
 public class SudokuGUI extends JFrame implements ISudokuGUI {
@@ -46,26 +50,27 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         JMenu menuJuego = new JMenu("Menú");
 
         JMenuItem nuevaPartida = new JMenuItem("Nueva Partida");
-        JMenuItem darPista = new JMenuItem("Pista");
+        JMenuItem darPista     = new JMenuItem("Pista");
         JMenuItem resolverTodo = new JMenuItem("Resolver");
-        JMenuItem salir = new JMenuItem("Salir");
+        JMenuItem salir        = new JMenuItem("Salir");
 
-        // Acción: Nueva partida
         nuevaPartida.addActionListener(e -> {
             seleccionarDificultad();
             refrescarTablero();
         });
 
-        // Acción: Salir
         salir.addActionListener(e -> {
-            int confirmacion = JOptionPane.showConfirmDialog(this,
-                    "¿Seguro que quieres salir?", "Salir del Sudoku", JOptionPane.YES_NO_OPTION);
-            if (confirmacion == JOptionPane.YES_OPTION) {
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "¿Seguro que quieres salir?",
+                    "Salir del Sudoku",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (confirm == JOptionPane.YES_OPTION) {
                 System.exit(0);
             }
         });
 
-        // Acción: Pista
         darPista.addActionListener(e -> {
             try {
                 int[] pista = resolver.obtenerPista(sudoku);
@@ -79,12 +84,14 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
             }
         });
 
-        // Acción: Resolver completo
         resolverTodo.addActionListener(e -> {
-            int confirma = JOptionPane.showConfirmDialog(this,
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
                     "¿Quieres que resuelva todo el Sudoku?",
-                    "Resolver completo", JOptionPane.YES_NO_OPTION);
-            if (confirma == JOptionPane.YES_OPTION) {
+                    "Resolver completo",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (confirm == JOptionPane.YES_OPTION) {
                 try {
                     resolver.resolver(sudoku);
                     refrescarTablero();
@@ -99,10 +106,10 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
 
         menuJuego.add(nuevaPartida);
         menuJuego.addSeparator();
-        menuJuego.add(salir);
-        menuJuego.addSeparator();
         menuJuego.add(darPista);
         menuJuego.add(resolverTodo);
+        menuJuego.addSeparator();
+        menuJuego.add(salir);
 
         barraMenu.add(menuJuego);
         setJMenuBar(barraMenu);
@@ -162,12 +169,18 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
                 campo.setFont(new Font("Courier New", Font.BOLD, 22));
                 campo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
+                // Aplicamos el filtro para permitir solo 1-9
+                ((AbstractDocument) campo.getDocument())
+                        .setDocumentFilter(new DigitFilter());
+
                 int valor = sudoku.getValor(fila, columna);
                 if (valor != 0) {
                     campo.setText(String.valueOf(valor));
                     campo.setEditable(false);
                     campo.setBackground(new Color(240, 248, 255));
                     campo.setForeground(new Color(0, 51, 102));
+                } else {
+                    campo.setText("");
                 }
 
                 celdas[fila][columna] = campo;
@@ -188,9 +201,7 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
 
     @Override
     public void mostrarEnhorabuena() {
-        // Carga un GIF animado
         ImageIcon icon = new ImageIcon(getClass().getResource("/gifs/APLAUSOS.gif"));
-        // Muestra diálogo con solo botón "OK" y sale al pulsar
         JOptionPane.showOptionDialog(
                 this,
                 "¡Has resuelto el Sudoku!",
@@ -200,7 +211,24 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
                 icon,
                 new Object[]{"Salir"},
                 "Salir");
-        // Al cerrar el diálogo, salimos
         System.exit(0);
+    }
+
+    // --- Inner class para filtrar dígitos de 1 a 9 ---
+    private static class DigitFilter extends DocumentFilter {
+        @Override
+        public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr)
+                throws BadLocationException {
+            if (text.matches("[1-9]")) {
+                super.insertString(fb, offset, text, attr);
+            }
+        }
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                throws BadLocationException {
+            if (text.matches("[1-9]")) {
+                super.replace(fb, offset, length, text, attrs);
+            }
+        }
     }
 }
