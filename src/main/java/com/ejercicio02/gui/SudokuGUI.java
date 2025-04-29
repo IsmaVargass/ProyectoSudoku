@@ -50,9 +50,9 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         JMenu menuJuego = new JMenu("Menú");
 
         JMenuItem nuevaPartida = new JMenuItem("Nueva Partida");
-        JMenuItem darPista     = new JMenuItem("Pista");
+        JMenuItem darPista = new JMenuItem("Pista");
         JMenuItem resolverTodo = new JMenuItem("Resolver");
-        JMenuItem salir        = new JMenuItem("Salir");
+        JMenuItem salir = new JMenuItem("Salir");
 
         nuevaPartida.addActionListener(e -> {
             seleccionarDificultad();
@@ -214,21 +214,33 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         System.exit(0);
     }
 
-    // --- Inner class para filtrar dígitos de 1 a 9 ---
+    // Filtro personalizado para JTextField que solo permite un dígito entre 1 y 9
+    // ejecuta cuando el usuario intenta insertar texto en un JTextField vacío
     private static class DigitFilter extends DocumentFilter {
         @Override
         public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr)
                 throws BadLocationException {
-            if (text.matches("[1-9]")) {
-                super.insertString(fb, offset, text, attr);
+            // Solo insertamos si el texto es válido (un solo dígito del 1 al 9)
+            if (isValidInput(fb, text)) {
+                // el contenido del campo con el nuevo valor
+                fb.replace(0, fb.getDocument().getLength(), text, attr);
             }
         }
+
         @Override
+        // se ejecuta cuando el usuario intenta reemplazar el contenido del JTextField
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
                 throws BadLocationException {
-            if (text.matches("[1-9]")) {
-                super.replace(fb, offset, length, text, attrs);
+            // Solo permitimos el reemplazo si el texto es válido (1 dígito entre 1 y 9)
+            if (isValidInput(fb, text)) {
+                // el contenido del campo con el nuevo valor
+                fb.replace(0, fb.getDocument().getLength(), text, attrs);
             }
+        }
+
+        // auxiliar que valida si el texto ingresado es exactamente un carácter entre 1 y 9
+        private boolean isValidInput(FilterBypass fb, String text) {
+            return text.matches("[1-9]") && text.length() == 1;
         }
     }
 }
