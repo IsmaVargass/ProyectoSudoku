@@ -28,7 +28,7 @@ public class Sudoku implements ISudoku {
     @Override
     public void generarTablero(String dificultad) throws SudokuException {
         GeneradorSudoku generador = new GeneradorSudoku();
-        this.tablero = generador.generar();
+        this.tablero = generador.generar(dificultad);
 
         // Marcar celdas fijas
         for (int fila = 0; fila < 9; fila++) {
