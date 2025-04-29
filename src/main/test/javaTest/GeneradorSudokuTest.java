@@ -1,4 +1,4 @@
 package javaTest;
 
-public class GeneradorSudoku {
+public class GeneradorSudokuTest {
 }
