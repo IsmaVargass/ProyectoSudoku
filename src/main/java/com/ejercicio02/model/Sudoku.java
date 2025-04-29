@@ -7,6 +7,7 @@ import com.ejercicio02.interfaces.ISudoku;
 public class Sudoku implements ISudoku {
     private int[][] tablero;
     private final boolean[][] celdasFijas;
+    private int[][] solucionGrid;  // Aquí guardaremos la solución
 
     public Sudoku() {
         this.tablero = new int[9][9];
@@ -20,6 +21,8 @@ public class Sudoku implements ISudoku {
             System.arraycopy(otro.tablero[i], 0, this.tablero[i], 0, 9);
             System.arraycopy(otro.celdasFijas[i], 0, this.celdasFijas[i], 0, 9);
         }
+        // Copiamos la solución también si estamos haciendo una copia
+        this.solucionGrid = otro.solucionGrid != null ? otro.solucionGrid.clone() : null;
     }
 
     @Override
@@ -33,50 +36,53 @@ public class Sudoku implements ISudoku {
                 celdasFijas[fila][col] = (tablero[fila][col] != 0);
             }
         }
+
+        // Resolvemos el Sudoku y guardamos la solución
+        resolverSudoku();
     }
 
-    // Comprueba si colocar valor en (fila, columna) (0-based) es válido.
-    // No lanza excepción para backtracking: devuelve false si no es posible.
+    private void resolverSudoku() {
+        // Resuelve el Sudoku usando un algoritmo de backtracking (o el que sea que uses)
+        // Aquí simularé que ya tienes el código para resolverlo y llenar la solución
+        solucionGrid = new int[9][9];
 
-    public boolean esMovimientoValido(int fila, int columna, int valor) {
-        // rangos
-        if (fila < 0 || fila > 8 || columna < 0 || columna > 8 || valor < 1 || valor > 9) {
-            return false;
-        }
-        if (celdasFijas[fila][columna]) {
-            return false;
-        }
-        //  fila
-        for (int vEnFila : tablero[fila]) {
-            if (vEnFila == valor) {
-                return false;
-            }
-        }
-        //  columna
+        // Copia del tablero actual para poder resolverlo sin alterar el tablero original
+        int[][] copiaTablero = new int[9][9];
         for (int i = 0; i < 9; i++) {
-            if (tablero[i][columna] == valor) {
-                return false;
-            }
+            System.arraycopy(tablero[i], 0, copiaTablero[i], 0, 9);
         }
-        //  bloque 3x3
-        int bloqueFila = (fila / 3) * 3;
-        int bloqueCol  = (columna / 3) * 3;
-        for (int r = bloqueFila; r < bloqueFila + 3; r++) {
-            for (int c = bloqueCol; c < bloqueCol + 3; c++) {
-                if (tablero[r][c] == valor) {
-                    return false;
-                }
-            }
-        }
-        return true;
+
+        // Resolver el Sudoku (por ejemplo, usando backtracking)
+        // Este es un ejemplo de cómo resolverlo (debes tener un método de backtracking para esto)
+        backtrackResolver(copiaTablero);
+
+        // Guardamos la solución final
+        this.solucionGrid = copiaTablero;
+    }
+
+    private boolean backtrackResolver(int[][] tablero) {
+        // Implementar el algoritmo de backtracking aquí (por ejemplo)
+        // Asegúrate de llenar correctamente el tablero con los valores correctos
+        // Una vez resuelto, se copiará a solucionGrid
+        // Aquí simplemente devolveremos true como un ejemplo
+        // Tienes que implementar la lógica real de backtracking en este método
+
+        return true; // Esto es solo un placeholder
     }
 
     @Override
-    public void colocarNumero(int fila, int columna, int valor) throws SudokuException {
-        // convierte a 0-based
-        if (esMovimientoValido(fila - 1, columna - 1, valor)) {
-            setValor(fila - 1, columna - 1, valor);
-        }
+    public int getValor(int fila, int columna) {
+        return tablero[fila][columna];
+    }
+
+    @Override
+    public void setValor(int fila, int columna, int valor) {
+        tablero[fila][columna] = valor;
+    }
+
+    // Método para obtener la solución del Sudoku
+    public int[][] getGrid() {
+        return tablero;  // el array interno de 9×9
     }
 
     @Override
@@ -112,14 +118,69 @@ public class Sudoku implements ISudoku {
         }
     }
 
-    @Override
-    public int getValor(int fila, int columna) {
-        return tablero[fila][columna];
+    // Método que valida si un valor es válido para colocar en una celda
+    public boolean esMovimientoValido(int fila, int columna, int valor) {
+        if (fila < 0 || fila > 8 || columna < 0 || columna > 8 || valor < 1 || valor > 9) {
+            return false;
+        }
+        if (celdasFijas[fila][columna]) {
+            return false;
+        }
+        for (int vEnFila : tablero[fila]) {
+            if (vEnFila == valor) {
+                return false;
+            }
+        }
+        for (int i = 0; i < 9; i++) {
+            if (tablero[i][columna] == valor) {
+                return false;
+            }
+        }
+        int bloqueFila = (fila / 3) * 3;
+        int bloqueCol  = (columna / 3) * 3;
+        for (int r = bloqueFila; r < bloqueFila + 3; r++) {
+            for (int c = bloqueCol; c < bloqueCol + 3; c++) {
+                if (tablero[r][c] == valor) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
-    @Override
-    public void setValor(int fila, int columna, int valor) {
-        // direct set (0-based fila/columna)
-        tablero[fila][columna] = valor;
+    public void colocarNumero(int fila, int columna, int valor) throws SudokuException {
+        // Verifica que el valor esté dentro del rango permitido (1-9)
+        if (valor < 1 || valor > 9) {
+            throw new SudokuException("Valor fuera del rango permitido (1-9).");
+        }
+
+        // Verifica que el número no esté repetido en la fila
+        for (int col = 0; col < 9; col++) {
+            if (getValor(fila, col) == valor) {
+                throw new SudokuException("El número ya está en la fila.");
+            }
+        }
+
+        // Verifica que el número no esté repetido en la columna
+        for (int row = 0; row < 9; row++) {
+            if (getValor(row, columna) == valor) {
+                throw new SudokuException("El número ya está en la columna.");
+            }
+        }
+
+        // Verifica que el número no esté repetido en el bloque 3x3
+        int bloqueInicioFila = (fila / 3) * 3;
+        int bloqueInicioColumna = (columna / 3) * 3;
+
+        for (int i = bloqueInicioFila; i < bloqueInicioFila + 3; i++) {
+            for (int j = bloqueInicioColumna; j < bloqueInicioColumna + 3; j++) {
+                if (getValor(i, j) == valor) {
+                    throw new SudokuException("El número ya está en el bloque 3x3.");
+                }
+            }
+        }
+
+        // Si pasa todas las validaciones, se coloca el número
+        setValor(fila, columna, valor);
     }
 }

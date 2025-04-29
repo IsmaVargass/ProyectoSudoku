@@ -12,6 +12,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class SudokuGUI extends JFrame implements ISudokuGUI {
 
@@ -20,6 +22,8 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
     private JTextField[][] celdas;
     private JPanel tableroPanel;
     private JPanel menuPanel;
+    private boolean validacionActiva = false;
+    private int[][] solucionGrid;
 
     public SudokuGUI() {
         setTitle("Sudoku Game");
@@ -32,7 +36,6 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         resolver = new ResolverSudoku();
 
         iniciarInterfaz();
-
         setVisible(true);
     }
 
@@ -54,21 +57,15 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         JMenuItem resolverTodo = new JMenuItem("Resolver");
         JMenuItem salir = new JMenuItem("Salir");
 
-        nuevaPartida.addActionListener(e -> {
-            seleccionarDificultad();
+        JCheckBoxMenuItem toggleValidacion = new JCheckBoxMenuItem("Validación en tiempo real");
+        toggleValidacion.addItemListener(e -> {
+            validacionActiva = toggleValidacion.isSelected();
             refrescarTablero();
         });
 
-        salir.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Seguro que quieres salir?",
-                    "Salir del Sudoku",
-                    JOptionPane.YES_NO_OPTION
-            );
-            if (confirm == JOptionPane.YES_OPTION) {
-                System.exit(0);
-            }
+        nuevaPartida.addActionListener(e -> {
+            seleccionarDificultad();
+            refrescarTablero();
         });
 
         darPista.addActionListener(e -> {
@@ -76,32 +73,28 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
                 int[] pista = resolver.obtenerPista(sudoku);
                 sudoku.setValor(pista[0], pista[1], pista[2]);
                 refrescarTablero();
-                if (sudoku.estaResuelto()) {
-                    mostrarEnhorabuena();
-                }
+                if (sudoku.estaResuelto()) mostrarEnhorabuena();
             } catch (SudokuException ex) {
                 JOptionPane.showMessageDialog(this, "No se pudo dar pista: " + ex.getMessage());
             }
         });
 
         resolverTodo.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Quieres que resuelva todo el Sudoku?",
-                    "Resolver completo",
-                    JOptionPane.YES_NO_OPTION
-            );
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Quieres que resuelva todo el Sudoku?", "Resolver completo", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
                     resolver.resolver(sudoku);
                     refrescarTablero();
-                    if (sudoku.estaResuelto()) {
-                        mostrarEnhorabuena();
-                    }
+                    if (sudoku.estaResuelto()) mostrarEnhorabuena();
                 } catch (SudokuException ex) {
                     JOptionPane.showMessageDialog(this, "No se pudo resolver: " + ex.getMessage());
                 }
             }
+        });
+
+        salir.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres salir?", "Salir del Sudoku", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) System.exit(0);
         });
 
         menuJuego.add(nuevaPartida);
@@ -109,6 +102,7 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         menuJuego.add(darPista);
         menuJuego.add(resolverTodo);
         menuJuego.addSeparator();
+        menuJuego.add(toggleValidacion);
         menuJuego.add(salir);
 
         barraMenu.add(menuJuego);
@@ -133,7 +127,14 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         }
 
         try {
+            // Generamos el puzzle
             sudoku.generarTablero(dificultad.toLowerCase());
+
+            // Creamos una copia y resolvemos para obtener la solución completa
+            Sudoku copia = new Sudoku(sudoku);
+            resolver.resolver(copia);
+            // Obtenemos el tablero resuelto
+            solucionGrid = copia.getGrid();
         } catch (SudokuException e) {
             JOptionPane.showMessageDialog(this, "Error generando tablero: " + e.getMessage());
             System.exit(1);
@@ -155,48 +156,56 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
 
     @Override
     public void inicializarTableroVisual() {
-        if (tableroPanel != null) {
-            remove(tableroPanel);
-        }
+        if (tableroPanel != null) remove(tableroPanel);
         tableroPanel = new JPanel(new GridLayout(9, 9));
         tableroPanel.setBackground(Color.LIGHT_GRAY);
 
         celdas = new JTextField[9][9];
         for (int fila = 0; fila < 9; fila++) {
-            for (int columna = 0; columna < 9; columna++) {
+            for (int col = 0; col < 9; col++) {
                 JTextField campo = new JTextField();
                 campo.setHorizontalAlignment(JTextField.CENTER);
                 campo.setFont(new Font("Courier New", Font.BOLD, 22));
                 campo.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
-                // Aplicamos el filtro para permitir solo 1-9
-                ((AbstractDocument) campo.getDocument())
-                        .setDocumentFilter(new DigitFilter());
+                ((AbstractDocument) campo.getDocument()).setDocumentFilter(new DigitFilter());
 
-                int valor = sudoku.getValor(fila, columna);
+                int valor = sudoku.getValor(fila, col);
                 if (valor != 0) {
                     campo.setText(String.valueOf(valor));
                     campo.setEditable(false);
                     campo.setBackground(new Color(240, 248, 255));
                     campo.setForeground(new Color(0, 51, 102));
                 } else {
-                    campo.setText("");
+                    if (validacionActiva) {
+                        int finalF = fila, finalC = col;
+                        campo.getDocument().addDocumentListener(new DocumentListener() {
+                            @Override
+                            public void insertUpdate(DocumentEvent e) {
+                                validar(campo, finalF, finalC);
+                            }
+                            @Override
+                            public void removeUpdate(DocumentEvent e) {
+                                validar(campo, finalF, finalC);
+                            }
+                            @Override
+                            public void changedUpdate(DocumentEvent e) {}
+                        });
+                    }
                 }
-
-                celdas[fila][columna] = campo;
+                celdas[fila][col] = campo;
                 tableroPanel.add(campo);
             }
         }
-
         add(tableroPanel, BorderLayout.CENTER);
     }
 
     @Override
     public void refrescarTablero() {
-        tableroPanel.removeAll();
+        if (tableroPanel != null) remove(tableroPanel);
         inicializarTableroVisual();
-        tableroPanel.revalidate();
-        tableroPanel.repaint();
+        revalidate();
+        repaint();
     }
 
     @Override
@@ -210,36 +219,76 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
                 JOptionPane.INFORMATION_MESSAGE,
                 icon,
                 new Object[]{"Salir"},
-                "Salir");
+                "Salir"
+        );
         System.exit(0);
     }
 
-    // Filtro personalizado para JTextField que solo permite un dígito entre 1 y 9
-    // ejecuta cuando el usuario intenta insertar texto en un JTextField vacío
+    private void validar(JTextField campo, int fila, int col) {
+        String texto = campo.getText();
+        // Resetear el color de fondo cada vez que se valida
+        campo.setBackground(Color.WHITE);
+
+        if (texto.isEmpty()) {
+            return;  // Si el campo está vacío, no se hace validación
+        }
+
+        try {
+            int numero = Integer.parseInt(texto);
+
+            // Comprobar si el número está en la fila, columna o subcuadro 3x3
+            boolean valido = esNumeroValido(fila, col, numero);
+
+            if (valido) {
+                campo.setBackground(new Color(144, 238, 144)); // Verde si es correcto
+            } else {
+                campo.setBackground(new Color(255, 182, 193)); // Rojo si el número no es correcto
+            }
+        } catch (NumberFormatException e) {
+            campo.setBackground(new Color(255, 182, 193)); // Rojo si el texto no es un número válido
+        }
+    }
+
+    private boolean esNumeroValido(int fila, int col, int numero) {
+        // Verificar si el número ya está en la fila
+        for (int c = 0; c < 9; c++) {
+            if (c != col && sudoku.getValor(fila, c) == numero) {
+                return false;
+            }
+        }
+
+        // Verificar si el número ya está en la columna
+        for (int r = 0; r < 9; r++) {
+            if (r != fila && sudoku.getValor(r, col) == numero) {
+                return false;
+            }
+        }
+
+        // Verificar si el número ya está en el subcuadro 3x3
+        int startRow = (fila / 3) * 3;
+        int startCol = (col / 3) * 3;
+
+        for (int r = startRow; r < startRow + 3; r++) {
+            for (int c = startCol; c < startCol + 3; c++) {
+                if (r != fila && c != col && sudoku.getValor(r, c) == numero) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     private static class DigitFilter extends DocumentFilter {
         @Override
-        public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr)
-                throws BadLocationException {
-            // Solo insertamos si el texto es válido (un solo dígito del 1 al 9)
-            if (isValidInput(fb, text)) {
-                // el contenido del campo con el nuevo valor
-                fb.replace(0, fb.getDocument().getLength(), text, attr);
-            }
+        public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
+            if (isValid(text)) fb.replace(0, fb.getDocument().getLength(), text, attr);
         }
-
         @Override
-        // se ejecuta cuando el usuario intenta reemplazar el contenido del JTextField
-        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
-                throws BadLocationException {
-            // Solo permitimos el reemplazo si el texto es válido (1 dígito entre 1 y 9)
-            if (isValidInput(fb, text)) {
-                // el contenido del campo con el nuevo valor
-                fb.replace(0, fb.getDocument().getLength(), text, attrs);
-            }
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            if (isValid(text)) fb.replace(0, fb.getDocument().getLength(), text, attrs);
         }
-
-        // auxiliar que valida si el texto ingresado es exactamente un carácter entre 1 y 9
-        private boolean isValidInput(FilterBypass fb, String text) {
+        private boolean isValid(String text) {
             return text.matches("[1-9]") && text.length() == 1;
         }
     }

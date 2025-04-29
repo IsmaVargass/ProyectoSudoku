@@ -10,6 +10,5 @@ public interface ISudoku {
     boolean estaResuelto();
     void mostrarTablero();
     int getValor(int fila, int columna);
-
     void setValor(int fila, int col, int i);
 }

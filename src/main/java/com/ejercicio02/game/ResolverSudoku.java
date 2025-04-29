@@ -32,7 +32,7 @@ public class ResolverSudoku implements IResolverSudoku {
         }
     }
 
-    private boolean resolverBacktracking(Sudoku s)  {
+    private boolean resolverBacktracking(Sudoku s) throws SudokuException {
         for (int fila = 0; fila < 9; fila++) {
             for (int col = 0; col < 9; col++) {
                 if (s.getValor(fila, col) == 0) {
