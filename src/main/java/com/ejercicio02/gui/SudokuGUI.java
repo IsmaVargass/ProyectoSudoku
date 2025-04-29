@@ -127,13 +127,10 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         }
 
         try {
-            // Generamos el puzzle
             sudoku.generarTablero(dificultad.toLowerCase());
 
-            // Creamos una copia y resolvemos para obtener la solución completa
             Sudoku copia = new Sudoku(sudoku);
             resolver.resolver(copia);
-            // Obtenemos el tablero resuelto
             solucionGrid = copia.getGrid();
         } catch (SudokuException e) {
             JOptionPane.showMessageDialog(this, "Error generando tablero: " + e.getMessage());
@@ -226,57 +223,21 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
 
     private void validar(JTextField campo, int fila, int col) {
         String texto = campo.getText();
-        // Resetear el color de fondo cada vez que se valida
         campo.setBackground(Color.WHITE);
 
-        if (texto.isEmpty()) {
-            return;  // Si el campo está vacío, no se hace validación
-        }
+        if (texto.isEmpty()) return;
 
         try {
             int numero = Integer.parseInt(texto);
 
-            // Comprobar si el número está en la fila, columna o subcuadro 3x3
-            boolean valido = esNumeroValido(fila, col, numero);
-
-            if (valido) {
-                campo.setBackground(new Color(144, 238, 144)); // Verde si es correcto
+            if (solucionGrid != null && numero == solucionGrid[fila][col]) {
+                campo.setBackground(new Color(144, 238, 144)); // Verde claro
             } else {
-                campo.setBackground(new Color(255, 182, 193)); // Rojo si el número no es correcto
+                campo.setBackground(new Color(255, 182, 193)); // Rojo claro
             }
         } catch (NumberFormatException e) {
-            campo.setBackground(new Color(255, 182, 193)); // Rojo si el texto no es un número válido
+            campo.setBackground(new Color(255, 182, 193)); // Rojo si no es válido
         }
-    }
-
-    private boolean esNumeroValido(int fila, int col, int numero) {
-        // Verificar si el número ya está en la fila
-        for (int c = 0; c < 9; c++) {
-            if (c != col && sudoku.getValor(fila, c) == numero) {
-                return false;
-            }
-        }
-
-        // Verificar si el número ya está en la columna
-        for (int r = 0; r < 9; r++) {
-            if (r != fila && sudoku.getValor(r, col) == numero) {
-                return false;
-            }
-        }
-
-        // Verificar si el número ya está en el subcuadro 3x3
-        int startRow = (fila / 3) * 3;
-        int startCol = (col / 3) * 3;
-
-        for (int r = startRow; r < startRow + 3; r++) {
-            for (int c = startCol; c < startCol + 3; c++) {
-                if (r != fila && c != col && sudoku.getValor(r, c) == numero) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     private static class DigitFilter extends DocumentFilter {
@@ -284,10 +245,12 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
         public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
             if (isValid(text)) fb.replace(0, fb.getDocument().getLength(), text, attr);
         }
+
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
             if (isValid(text)) fb.replace(0, fb.getDocument().getLength(), text, attrs);
         }
+
         private boolean isValid(String text) {
             return text.matches("[1-9]") && text.length() == 1;
         }
