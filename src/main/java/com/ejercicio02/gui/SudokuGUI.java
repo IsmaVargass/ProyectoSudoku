@@ -208,18 +208,25 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
     @Override
     public void mostrarEnhorabuena() {
         ImageIcon icon = new ImageIcon(getClass().getResource("/gifs/APLAUSOS.gif"));
-        JOptionPane.showOptionDialog(
+        int opcion = JOptionPane.showOptionDialog(
                 this,
                 "¡Has resuelto el Sudoku!",
                 "Sudoku Resuelto",
-                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.INFORMATION_MESSAGE,
                 icon,
-                new Object[]{"Salir"},
-                "Salir"
+                new Object[]{"Volver a jugar", "Salir"},
+                "Volver a jugar"
         );
-        System.exit(0);
+
+        if (opcion == JOptionPane.YES_OPTION) {
+            seleccionarDificultad();
+            refrescarTablero();
+        } else {
+            System.exit(0);
+        }
     }
+
 
     private void validar(JTextField campo, int fila, int col) {
         String texto = campo.getText();
