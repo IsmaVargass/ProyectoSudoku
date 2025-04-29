@@ -1,12 +1,15 @@
 package com.ejercicio02.generator;
 
 import com.ejercicio02.interfaces.IGeneradorSudoku;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GeneradorSudoku implements IGeneradorSudoku {
 
     @Override
     public int[][] generar(String dificultad) {
-        return generarPuzzle(dificultad); // recibe la dificultad
+        return generarPuzzle(dificultad);
     }
 
     private int[][] generarPuzzle(String dificultad) {
@@ -46,7 +49,11 @@ public class GeneradorSudoku implements IGeneradorSudoku {
         for (int fila = 0; fila < 9; fila++) {
             for (int columna = 0; columna < 9; columna++) {
                 if (grid[fila][columna] == 0) {
-                    for (int candidato = 1; candidato <= 9; candidato++) {
+                    List<Integer> candidatos = new ArrayList<>();
+                    for (int i = 1; i <= 9; i++) candidatos.add(i);
+                    Collections.shuffle(candidatos);
+
+                    for (int candidato : candidatos) {
                         if (esSeguro(grid, fila, columna, candidato)) {
                             grid[fila][columna] = candidato;
                             if (rellenarSolucion(grid)) return true;
@@ -98,5 +105,4 @@ public class GeneradorSudoku implements IGeneradorSudoku {
         }
         return contador + 1;
     }
-
 }
