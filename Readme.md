@@ -116,7 +116,7 @@ Ejemplos:
 
 ---
 
-### 🙌 Recursos y Agradecimientos
+## 🙌 Recursos y Agradecimientos
 
 Durante el desarrollo de este proyecto, me he apoyado en las siguientes fuentes de conocimiento y herramientas:
 
