@@ -1,5 +1,23 @@
 # 📚 Documentación del Proyecto Sudoku
 
+[![Stars](https://img.shields.io/github/stars/IsmaVargass/ProyectoSudoku.svg?style=social&label=Stars)](https://github.com/IsmaVargass/ProyectoSudoku/stargazers)
+[![Forks](https://img.shields.io/github/forks/IsmaVargass/ProyectoSudoku.svg?style=social&label=Forks)](https://github.com/IsmaVargass/ProyectoSudoku/network/members)
+[![Issues](https://img.shields.io/github/issues/IsmaVargass/ProyectoSudoku.svg)](https://github.com/IsmaVargass/ProyectoSudoku/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/IsmaVargass/ProyectoSudoku.svg)](https://github.com/IsmaVargass/ProyectoSudoku/commits/master/)
+[![Repo Size](https://img.shields.io/github/repo-size/IsmaVargass/ProyectoSudoku.svg)](https://github.com/IsmaVargass/ProyectoSudoku)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Made with Java](https://img.shields.io/badge/Made%20with-Java-orange.svg)](https://www.java.com/)
+
+
+
+## 📑 Tabla de Contenidos
+1. [Visión General](#-visión-general)
+2. [Estructura de Carpetas](#-estructura-de-carpetas)
+3. [Paquetes y Clases Principales](#️-paquetes-y-clases-principales)
+4. [Pruebas Unitarias (JUnit)](#-pruebas-unitarias-junit)
+5. [Cómo jugar](#️-cómo-jugar)
+6. [Recursos y Agradecimientos](#-recursos-y-agradecimientos)
+
 ## 🎯 Visión General
 [Visualizar esquema UML](UML.md) 🖼️
 
