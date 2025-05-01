@@ -114,4 +114,29 @@ Ejemplos:
    java Main
    ```
 
+---
+
+### 🙌 Recursos y Agradecimientos
+
+Durante el desarrollo de este proyecto, me he apoyado en las siguientes fuentes de conocimiento y herramientas:
+
+#### 📺 YouTube
+- [Lógica de Backtracking para resolver Sudoku](https://youtu.be/3NOYR2T8zTo?si=SKSaknWNNFnpzejA)
+- [Resolviendo Sudoku en Java](https://youtu.be/N-eoEQiZWw0?si=5R7EB-1Q-G7mNbQI)
+- [Aplicación Sudoku Java](https://youtu.be/-AgMyQmSvNc?si=nqwmaPAyF5I9bsi7)
+- [Creación Sudoku desde cero](https://youtu.be/IIb-kxfH4Lw?si=iUjSz9wXj9dBrdot)   
+
+#### 🤖 ChatGPT
+- [ChatGPT de OpenAI](https://chat.openai.com): Asistencia en la organización de clases, patrones de diseño y resolución de dudas sobre algoritmos y pruebas.
+
+#### 📘 Documentación oficial de Java
+- [Collections](https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html)
+- [Java Swing](https://docs.oracle.com/javase/tutorial/uiswing/)
+- [Manejo de excepciones en Java](https://docs.oracle.com/javase/tutorial/essential/exceptions/)
+
+#### 💬 Stack Overflow
+- [https://stackoverflow.com](https://stackoverflow.com): Consulta de errores comunes y mejores prácticas en Java.
+
+> ¡Gracias a todos los creadores de contenido y comunidades que comparten su conocimiento libremente! 🙌
+>
 ¡Disfruta tu partida de Sudoku! 🎉
