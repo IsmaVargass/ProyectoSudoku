@@ -1,6 +1,8 @@
 # 📚 Documentación del Proyecto Sudoku
 
 ## 🎯 Visión General
+[Visualizar esquema UML](UML.md) 🖼️
+
 Este proyecto implementa un **juego de Sudoku** en Java con:
 - Generación aleatoria de puzzles según dificultad.
 - Resolución automática y obtención de pistas.
