@@ -1,5 +1,7 @@
 # 📚 Documentación del Proyecto Sudoku
 
+
+
 [![Stars](https://img.shields.io/github/stars/IsmaVargass/ProyectoSudoku.svg?style=social&label=Stars)](https://github.com/IsmaVargass/ProyectoSudoku/stargazers)
 
 [![Forks](https://img.shields.io/github/forks/IsmaVargass/ProyectoSudoku.svg?style=social&label=Forks)](https://github.com/IsmaVargass/ProyectoSudoku/network/members)
@@ -13,6 +15,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Made with Java](https://img.shields.io/badge/Made%20with-Java-orange.svg)](https://www.java.com/)
 
+## 📝 Documentación Técnica
+
+> **Importante:** Puedes descargar la documentación completa (incluye diagrama UML):
+> [📄 Documentación Técnica (PDF)](docs/Documentacion_Tecnica_Sudoku.pdf)
 
 
 ## 📑 Tabla de Contenidos
@@ -24,7 +30,7 @@
 6. [Recursos y Agradecimientos](#-recursos-y-agradecimientos)
 
 ## 🎯 Visión General
-[Visualizar esquema UML](UML.md) 🖼️
+[Visualizar esquema UML](docs/UML.md) 🖼️
 
 Este proyecto implementa un **juego de Sudoku** en Java con:
 - Generación aleatoria de puzzles según dificultad.
