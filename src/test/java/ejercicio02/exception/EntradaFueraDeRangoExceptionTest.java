@@ -1,14 +1,13 @@
-package javaTest;
+package ejercicio02.exception;
 
 import com.ejercicio02.exception.EntradaFueraDeRangoException;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.Test;
+import static org.testng.Assert.assertTrue;
 
 
 public class EntradaFueraDeRangoExceptionTest {
     @Test
-    void constructor_MensajeIncluyeValor() {
+    public void constructor_MensajeIncluyeValor() {
         // Al crear la excepción con un valor inválido, el mensaje debe mencionar ese valor
         EntradaFueraDeRangoException ex = new EntradaFueraDeRangoException(0);
         assertTrue(ex.getMessage().contains("0"),

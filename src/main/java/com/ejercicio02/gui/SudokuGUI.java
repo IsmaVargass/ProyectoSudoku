@@ -17,7 +17,7 @@ import javax.swing.event.DocumentListener;
 
 public class SudokuGUI extends JFrame implements ISudokuGUI {
 
-    private Sudoku sudoku;
+    public Sudoku sudoku;
     private IResolverSudoku resolver;
     private JTextField[][] celdas;
     private JPanel tableroPanel;
@@ -228,7 +228,7 @@ public class SudokuGUI extends JFrame implements ISudokuGUI {
     }
 
 
-    private void validar(JTextField campo, int fila, int col) {
+    public void validar(JTextField campo, int fila, int col) {
         String texto = campo.getText();
         campo.setBackground(Color.WHITE);
 
