@@ -17,7 +17,7 @@
 
 ## 📝 Documentación Técnica
 
-> **Importante:** Puedes descargar la documentación completa (incluye diagrama UML):
+> **Importante:** Puedes descargar la documentación completa:
 > [📄 Documentación Técnica (PDF)](docs/Documentacion_Tecnica_Sudoku.pdf)
 
 
