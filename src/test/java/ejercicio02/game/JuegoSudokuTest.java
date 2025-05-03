@@ -2,11 +2,9 @@ package ejercicio02.game;
 
 import com.ejercicio02.game.JuegoSudoku;
 import org.junit.jupiter.api.*;
-
 import java.io.*;
 import java.util.NoSuchElementException;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JuegoSudokuTest {
 
@@ -22,7 +20,7 @@ public class JuegoSudokuTest {
 
     @AfterEach
     void tearDown() {
-        System.setIn(originalIn);  // Restaura System.in
+        System.setIn(originalIn);   // Restaura System.in
         System.setOut(originalOut); // Restaura System.out
     }
 
@@ -30,16 +28,15 @@ public class JuegoSudokuTest {
     void testIniciarMuestraMenusYLeeEntradas() {
         // Simula entradas: dificultad válida + algunas jugadas válidas
         String input = String.join(System.lineSeparator(),
-                "1", // dificultad: fácil
+                "1",      // dificultad: fácil
                 "1", "1", "1", // jugada 1
                 "2", "2", "2"  // jugada 2
         );
         System.setIn(new ByteArrayInputStream(input.getBytes()));
 
-        Assertions.assertThrows(NoSuchElementException.class, () -> {
-            // Ejecuta el juego. Al agotarse la entrada, lanzará una excepción (esperada)
-            JuegoSudoku juego = new JuegoSudoku();
-            juego.iniciar();
+        // Al agotarse la entrada, esperamos NoSuchElementException
+        assertThrows(NoSuchElementException.class, () -> {
+            new JuegoSudoku().iniciar();
         });
 
         String output = outputStream.toString();

@@ -1,12 +1,12 @@
 package ejercicio02.exception;
 
 import com.ejercicio02.exception.SudokuException;
-import org.testng.annotations.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class SudokuExceptionTest {
+
     @Test
     void constructor_YConstructorConCausa() {
         // Excepción base con mensaje
@@ -20,4 +20,3 @@ public class SudokuExceptionTest {
         assertSame(cause, ex2.getCause());
     }
 }
-

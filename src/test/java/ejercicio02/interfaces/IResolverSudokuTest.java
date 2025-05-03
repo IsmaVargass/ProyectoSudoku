@@ -12,22 +12,35 @@ public class IResolverSudokuTest {
     @Test
     void testObtenerPistaDevuelveCoordenadas() throws SudokuException {
         IResolverSudoku resolver = new IResolverSudoku() {
-            public int[] obtenerPista(Sudoku sudoku) { return new int[] {0, 0, 5}; }
-            public void resolver(Sudoku sudoku) {}
+            @Override
+            public int[] obtenerPista(Sudoku sudoku) throws SudokuException {
+                return new int[]{0, 0, 5};
+            }
+            @Override
+            public void resolver(Sudoku sudoku) throws SudokuException {
+                // implementación vacía
+            }
         };
 
         int[] pista = resolver.obtenerPista(new Sudoku());
-        assertNotNull(pista);
-        assertEquals(3, pista.length);
+        assertNotNull(pista, "La pista no debe ser nula");
+        assertEquals(3, pista.length, "La pista debe contener 3 elementos");
     }
 
     @Test
     void testResolverNoLanzaExcepcion() {
         IResolverSudoku resolver = new IResolverSudoku() {
-            public int[] obtenerPista(Sudoku sudoku) { return new int[0]; }
-            public void resolver(Sudoku sudoku) {}
+            @Override
+            public int[] obtenerPista(Sudoku sudoku) throws SudokuException {
+                return new int[0];
+            }
+            @Override
+            public void resolver(Sudoku sudoku) throws SudokuException {
+                // no lanza excepción
+            }
         };
 
-        assertDoesNotThrow(() -> resolver.resolver(new Sudoku()));
+        assertDoesNotThrow(() -> resolver.resolver(new Sudoku()),
+                "El método resolver no debe lanzar excepción");
     }
 }

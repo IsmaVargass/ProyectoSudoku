@@ -17,12 +17,12 @@ public class SudokuGUITest {
 
     @BeforeEach
     void setUp() {
-        // Subclase anónima para evitar que se ejecute el diálogo de dificultad
+        // Subclase anónima para evitar el diálogo de dificultad
         sudoku = new Sudoku();
         sudokuGUI = new SudokuGUI() {
             @Override
             public void seleccionarDificultad() {
-                // No hacer nada: así evitamos el JOptionPane que bloquea
+                // No mostramos el diálogo en los tests
             }
         };
         sudokuGUI.sudoku = sudoku;
@@ -31,45 +31,47 @@ public class SudokuGUITest {
     @Test
     void testIniciarInterfaz() {
         JMenuBar menuBar = sudokuGUI.getJMenuBar();
-        assertNotNull(menuBar);  // Asegura que la barra de menú no sea nula
+        assertNotNull(menuBar);
 
-        JMenu menuJuego = menuBar.getMenu(0);  // El primer menú debe ser "Menú"
+        JMenu menuJuego = menuBar.getMenu(0);
         assertNotNull(menuJuego);
-        assertEquals(7, menuJuego.getItemCount()); // Comprobamos que tiene 7 opciones
+        // Opciones: Nueva Partida, separator, Pista, Resolver, separator, Validación en tiempo real, Salir
+        assertEquals(7, menuJuego.getItemCount());
     }
 
     @Test
     void testRefrescarTablero() {
-        sudokuGUI.refrescarTablero();
-        assertTrue(sudokuGUI.getContentPane().isVisible());  // Verifica que la GUI esté visible
+        assertDoesNotThrow(() -> sudokuGUI.refrescarTablero());
+        assertTrue(sudokuGUI.getContentPane().isVisible());
     }
 
     @Test
     void testMostrarEnhorabuena() {
-        // Simulamos que el Sudoku ya está resuelto
-        assertFalse(sudoku.estaResuelto());  // Verifica si está resuelto
+        // Llamar al método no debe lanzar excepción
+        assertDoesNotThrow(() -> sudokuGUI.mostrarEnhorabuena());
     }
 
     @Test
-    void testValidarCorrecto() {
-        JTextField campoMock = new JTextField("5");
-        sudoku.setValor(0, 0, 5);  // El valor correcto es 5
-        sudokuGUI.validar(campoMock, 0, 0);
-        assertEquals(new Color(255, 182, 193), campoMock.getBackground());
+    void testValidarCorrectoSinColor() {
+        JTextField campo = new JTextField("5");
+        sudoku.setValor(0, 0, 5);
+        sudokuGUI.validar(campo, 0, 0);
+        // Validación desactivada por defecto: fondo blanco
+        assertEquals(Color.WHITE, campo.getBackground());
     }
 
     @Test
-    void testValidarIncorrecto() {
-        JTextField campoMock = new JTextField("3");
-        sudoku.setValor(0, 0, 5);  // El valor correcto es 5
-        sudokuGUI.validar(campoMock, 0, 0);
-        assertEquals(new Color(255, 182, 193), campoMock.getBackground());
+    void testValidarIncorrectoSinColor() {
+        JTextField campo = new JTextField("3");
+        sudoku.setValor(0, 0, 5);
+        sudokuGUI.validar(campo, 0, 0);
+        assertEquals(Color.WHITE, campo.getBackground());
     }
 
     @Test
-    void testValidarEntradaNoValida() {
-        JTextField campoMock = new JTextField("a");  // Entrada no numérica
-        sudokuGUI.validar(campoMock, 0, 0);
-        assertEquals(new Color(255, 182, 193), campoMock.getBackground());
+    void testValidarEntradaNoValidaSinColor() {
+        JTextField campo = new JTextField("a");
+        sudokuGUI.validar(campo, 0, 0);
+        assertEquals(Color.WHITE, campo.getBackground());
     }
 }

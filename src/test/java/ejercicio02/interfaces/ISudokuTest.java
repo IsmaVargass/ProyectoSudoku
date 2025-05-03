@@ -16,29 +16,59 @@ public class ISudokuTest {
         sudoku = new ISudoku() {
             private int[][] grid = new int[9][9];
 
-            public void generarTablero(String dificultad) {}
-            public boolean esMovimientoValido(int fila, int columna, int valor) { return true; }
-            public void colocarNumero(int fila, int columna, int valor) {}
-            public boolean estaResuelto() { return false; }
-            public void mostrarTablero() {}
-            public int getValor(int fila, int columna) { return grid[fila][columna]; }
-            public void setValor(int fila, int columna, int valor) { grid[fila][columna] = valor; }
+            @Override
+            public void generarTablero(String dificultad) throws SudokuException {
+                // implementación vacía para pruebas
+            }
+
+            @Override
+            public boolean esMovimientoValido(int fila, int columna, int valor) throws SudokuException {
+                return true;
+            }
+
+            @Override
+            public void colocarNumero(int fila, int columna, int valor) throws SudokuException {
+                grid[fila][columna] = valor;
+            }
+
+            @Override
+            public boolean estaResuelto() {
+                return false;
+            }
+
+            @Override
+            public void mostrarTablero() {
+                // no hace nada
+            }
+
+            @Override
+            public int getValor(int fila, int columna) {
+                return grid[fila][columna];
+            }
+
+            @Override
+            public void setValor(int fila, int columna, int valor) {
+                grid[fila][columna] = valor;
+            }
         };
     }
 
     @Test
     void testSetYGetValor() {
         sudoku.setValor(0, 0, 7);
-        assertEquals(7, sudoku.getValor(0, 0));
+        assertEquals(7, sudoku.getValor(0, 0),
+                "getValor debe devolver el valor seteado con setValor");
     }
 
     @Test
     void testEsMovimientoValido() throws SudokuException {
-        assertTrue(sudoku.esMovimientoValido(0, 1, 5));
+        assertTrue(sudoku.esMovimientoValido(0, 1, 5),
+                "esMovimientoValido debe devolver true en este stub");
     }
 
     @Test
     void testEstaResuelto() {
-        assertFalse(sudoku.estaResuelto());
+        assertFalse(sudoku.estaResuelto(),
+                "estaResuelto debe devolver false en este stub");
     }
 }
