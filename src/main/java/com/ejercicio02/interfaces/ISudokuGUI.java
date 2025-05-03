@@ -1,5 +1,7 @@
 package com.ejercicio02.interfaces;
 
+import javax.swing.*;
+
 // Abstrae la GUI Swing
 public interface ISudokuGUI {
     // iniciar la interfaz
@@ -16,4 +18,7 @@ public interface ISudokuGUI {
     void refrescarTablero();
     // enhorabuena por ganar
     void mostrarEnhorabuena();
+
+    // ------ Modificación principal: validar() actualizada ------
+    void validar(JTextField campo, int fila, int col);
 }
