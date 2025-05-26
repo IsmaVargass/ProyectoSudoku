@@ -26,7 +26,7 @@ public class ResolverSudokuTest {
                 "La celda vacía debería llenarse con un valor válido");
     }
 
-    //TODO: El test tardó demasiado; probablemente hay recursión infinita
+    //TODO: El test tardó demasiado; hay recursión infinita
 
     /*TODO: ANOTO EL ANTERIOR TEST:
     @Test

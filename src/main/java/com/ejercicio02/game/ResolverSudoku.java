@@ -32,6 +32,20 @@ public class ResolverSudoku implements IResolverSudoku {
         }
     }
 
+    // Recorre todas las celdas del tablero de Sudoku (9x9) fila por fila y columna por columna.
+    // Si encuentra una celda vacía (0), intenta colocarle un número del 1 al 9.
+    // Prueba con todos los números del 1 al 9.
+    //Solo intenta poner un número si es válido (es decir, no viola las reglas del Sudoku: fila, columna o bloque 3x3).
+
+    /*
+    Si el número es válido, lo coloca en la celda.
+    Luego llama recursivamente al mismo método para continuar resolviendo el resto del tablero.
+    Si esa llamada devuelve true, significa que encontró una solución completa y termina el proceso.
+    Si no lleva a una solución, hace backtrack: borra el número (lo vuelve a poner en 0) y prueba con el siguiente número.
+     */
+
+    //Si probó todos los números del 1 al 9 y ninguno funcionó, significa que está en un camino sin salida: regresa false para retroceder (backtrack) al paso anterior.
+
     private boolean resolverBacktracking(Sudoku s) throws SudokuException {
         for (int fila = 0; fila < 9; fila++) {
             for (int col = 0; col < 9; col++) {
@@ -49,7 +63,7 @@ public class ResolverSudoku implements IResolverSudoku {
                 }
             }
         }
-        // si no quedan ceros, está resuelto
+        // Si no encuentra ninguna celda vacía, entonces el tablero ya está resuelto. Se devuelve true.
         return true;
     }
 }

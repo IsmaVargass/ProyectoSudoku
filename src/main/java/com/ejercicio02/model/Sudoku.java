@@ -42,8 +42,7 @@ public class Sudoku implements ISudoku {
     }
 
     private void resolverSudoku() {
-        // Resuelve el Sudoku usando un algoritmo de backtracking (o el que sea que uses)
-        // Aquí simularé que ya tienes el código para resolverlo y llenar la solución
+        // Resuelve el Sudoku usando un algoritmo de backtracking
         solucionGrid = new int[9][9];
 
         // Copia del tablero actual para poder resolverlo sin alterar el tablero original
@@ -53,22 +52,46 @@ public class Sudoku implements ISudoku {
         }
 
         // Resolver el Sudoku (por ejemplo, usando backtracking)
-        // Este es un ejemplo de cómo resolverlo (debes tener un método de backtracking para esto)
+        // Este es un ejemplo de cómo resolverlo
         backtrackResolver(copiaTablero);
 
         // Guardamos la solución final
         this.solucionGrid = copiaTablero;
     }
 
-    private boolean backtrackResolver(int[][] tablero) {
-        // Implementar el algoritmo de backtracking aquí (por ejemplo)
-        // Asegúrate de llenar correctamente el tablero con los valores correctos
-        // Una vez resuelto, se copiará a solucionGrid
-        // Aquí simplemente devolveremos true como un ejemplo
-        // Tienes que implementar la lógica real de backtracking en este método
-
-        return true; // Esto es solo un placeholder
+    private boolean backtrackResolver(int[][] grid) {
+        // Recorre el tablero buscando la primera casilla vacía (0)
+        for (int fila = 0; fila < 9; fila++) {
+            for (int col = 0; col < 9; col++) {
+                if (grid[fila][col] == 0) {
+                    // Intentar valores del 1 al 9
+                    for (int num = 1; num <= 9; num++) {
+                        if (esMovimientoValido(fila, col, num)) {
+                            grid[fila][col] = num;
+                            // Recursión
+                            if (backtrackResolver(grid)) {
+                                return true;
+                            }
+                            // Deshacer asignación si no condujo a solución
+                            grid[fila][col] = 0;
+                        }
+                    }
+                    // Ningún número válido en esta celda; retroceder
+                    return false;
+                }
+            }
+        }
+        // Si no quedan cerillas vacías, copiamos la solución
+        copiarSolucion(grid);
+        return true;
     }
+
+    private void copiarSolucion(int[][] grid) {
+        for (int i = 0; i < 9; i++) {
+            System.arraycopy(grid[i], 0, solucionGrid[i], 0, 9);
+        }
+    }
+
 
     @Override
     public int getValor(int fila, int columna) {
