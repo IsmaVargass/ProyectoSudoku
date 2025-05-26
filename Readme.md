@@ -19,6 +19,8 @@
 
 > **Importante:** Puedes descargar la documentación completa:
 > [📄 Documentación Técnica (PDF)](docs/Documentacion_Tecnica_Sudoku.pdf)
+
+> **Importante:** Puedes visualizar la presentación en Canva:
 > [📄 Presentación Sudoku](https://www.canva.com/design/DAGoiyeHDPM/NBDEReY8LnUrWgBuYPL3Ew/edit?utm_content=DAGoiyeHDPM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 
